@@ -15,7 +15,7 @@ def pdf_to_images(pdf_file: str, output_dir: str) -> list[str]:
     from PIL import Image
 
     pdf_document = fitz.open(pdf_file)
-    generated_files: list[str] = []
+    image_paths: list[str] = []
 
     for page_number in range(pdf_document.page_count):
         page = pdf_document[page_number]
@@ -23,7 +23,7 @@ def pdf_to_images(pdf_file: str, output_dir: str) -> list[str]:
         image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
         image_path = os.path.join(output_dir, f"page_{page_number + 1}.png")
         image.save(image_path)
-        generated_files.append(image_path)
+        image_paths.append(image_path)
 
     pdf_document.close()
-    return generated_files
+    return image_paths

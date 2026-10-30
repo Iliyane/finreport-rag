@@ -1,7 +1,13 @@
-from __future__ import annotations
+# syntax=docker/dockerfile:1
+FROM python:3.11-slim
 
-from scripts.finance_table_rag import main
+WORKDIR /app
 
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-if __name__ == "__main__":
-    main()
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

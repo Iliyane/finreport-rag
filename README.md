@@ -1,55 +1,49 @@
 # Finance Report RAG
 
-Finance Report RAG is an advanced document intelligence system for analyzing long and complex financial documents such as annual reports, balance sheets, performance reports, and fund prospectuses. The system is designed to extract relevant tables, reason over the financial content, and answer quantitative questions with source-grounded evidence.
+Finance Report RAG is an Advanced RAG system built for analyzing long and complex financial documents such as annual reports, balance sheets, management reports, performance summaries, and fund prospectuses. The system is designed to extract relevant information from financial documents and answer quantitative questions with source-grounded evidence.
 
-## Why this project exists
+## Project goal
 
-Financial documents rarely present the important information in continuous prose alone. Most critical insights live in tables, footnotes, performance summaries, and structured disclosures. A conventional RAG system that only searches raw text is often insufficient for financial analysis.
-
-This project combines:
-- PDF ingestion and page extraction
-- table detection and cropping
-- multimodal reasoning over document images
-- source-aware retrieval and answer generation
-- financial question handling for quantitative and comparative queries
-
-## Core capabilities
-
-- convert PDFs into page images
-- detect and crop tables from report pages
-- pass table images to a multimodal LLM for extraction and reasoning
-- answer questions grounded in the original report content
-- support multi-document comparison and document-level evidence retrieval
-
-## Example questions
-
+The goal of this project is to support questions such as:
 - What was the net income in 2024?
-- How did operating margin change over the last three years?
-- Which fund had the highest risk-adjusted return?
+- How did operating margin evolve over the last three years?
+- Which fund had the strongest risk-adjusted return?
 - What was the expense ratio in the latest prospectus?
+
+These questions require more than keyword search. They demand structured table understanding, metadata-aware retrieval, and evidence validation.
+
+## Why this project matters
+
+Financial documents are dense and highly structured. Important facts often live in tables, footnotes, disclosures, and performance sections rather than in plain narrative text. A practical financial RAG system must therefore:
+- read documents at the page and table level
+- understand tabular structure
+- normalize financial values and units
+- retrieve the right evidence before answering
+- validate the final answer against source content
 
 ## Architecture
 
-The project follows a modular finance-document pipeline:
+The system follows a modular pipeline:
 
-1. Ingestion
-   - load PDF files from a local folder or upload interface
-   - split pages into images
+1. Document ingestion
+   - read PDFs and other supported financial files
+   - extract page images
 
 2. Table detection
-   - detect table regions using a vision model
-   - crop each detected table into a dedicated image
+   - identify table regions in the page images
+   - crop the relevant table areas
 
-3. Extraction and reasoning
-   - pass relevant table images to GPT-4o or another multimodal model
-   - ask domain-specific questions grounded in those table images
+3. Multimodal extraction
+   - pass table images to a multimodal model
+   - extract values, captions, and relationship context
 
-4. RAG / evidence layer
-   - index the extracted tables and supporting text
-   - retrieve the strongest evidence before answering
+4. Retrieval and grounding
+   - index relevant sections and tables
+   - retrieve the strongest evidence for the question
 
-5. Answer validation
-   - verify that any metric or value comes from a valid source table or text section
+5. Answer generation
+   - produce an answer with citations to document, page, and table
+   - provide a confidence indication and source context
 
 ## Repository structure
 
@@ -70,10 +64,11 @@ The project follows a modular finance-document pipeline:
 │   └── README.md
 ├── .env.example
 ├── .gitignore
+├── Dockerfile
 ├── README.md
 ├── requirements.txt
 ├── main.py
-└── Dockerfile
+└── .env
 ```
 
 ## Tech stack
@@ -82,12 +77,12 @@ The project follows a modular finance-document pipeline:
 - FastAPI
 - PyMuPDF
 - Pillow
-- Transformers
 - Torch and Torchvision
+- Transformers
 - LlamaIndex
 - OpenAI multimodal models
-- Qdrant or FAISS for vector storage
-- optional OCR support with EasyOCR
+- FAISS or Qdrant for vector storage
+- optional OCR tools such as EasyOCR
 
 ## Quick start
 
@@ -111,69 +106,60 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configure environment variables
+### 4. Configure the environment
 
 ```bash
 cp .env.example .env
 ```
 
-Then add your secrets to `.env`.
+Then add your credentials in `.env`.
 
-## Secure configuration
-
-Do not hardcode credentials directly in the source code.
-Use environment variables instead.
-
-Example:
-
-```env
-OPENAI_API_KEY=your_key_here
-HF_TOKEN=your_hf_token_here
-```
-
-## Run the API
+### 5. Run the API
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-The API will be available at:
-- http://localhost:8000
-- http://localhost:8000/docs
-
-## Run the table-aware analysis script
+### 6. Run the document analysis script
 
 ```bash
 python main.py
 ```
 
-This script will:
-- convert the PDF into images
-- detect tables
-- crop extracted tables
-- prepare the data for multimodal analysis
+## Secure configuration
 
-## Security guidance
+This project requires environment variables for credentials. Do not commit secrets directly into source files.
 
-- never commit API keys or token values
-- keep `.env` out of version control
-- use a secure secret manager in production
-- avoid logging sensitive document content in shared environments
+Example `.env`:
 
-## Recommended next steps
+```env
+OPENAI_API_KEY=your_openai_key_here
+HF_TOKEN=your_huggingface_token_here
+```
 
-### MVP roadmap
-- PDF ingestion for local documents
-- table detection and cropping
-- multimodal Q&A on extracted table images
-- source-grounded answer structure
+## Security recommendations
+
+- keep `.env` out of Git tracking
+- use a secret manager in production
+- avoid logging financial documents with private data in shared systems
+- never store personal or regulated financial information in public repositories
+
+## MVP roadmap
+
+### Completed starter version
+- project scaffold
+- English documentation
+- FastAPI starter API
+- modular PDF conversion service
+- table detection service
+- multimodal finance query entry point
 
 ### Production roadmap
-- vector database integration
-- metadata indexing by company, year, and report type
-- answer verification layer
-- multi-document comparison workflows
-- secure API and user authentication
+- document indexing with vector database
+- table-aware retrieval and reranking
+- answer verification against original document sources
+- multi-document comparison support
+- enterprise authentication and logging
 
 ## License
 
@@ -181,4 +167,4 @@ MIT
 
 ## Project status
 
-This repository is a strong foundation for a finance-specific multimodal RAG pipeline and is designed to be extended into a production-grade document intelligence system.
+This repository is a funded starter for a finance-focused multimodal RAG application. It is ready to be extended with real document ingestion, retrieval, and source-grounded answer generation for financial documents.

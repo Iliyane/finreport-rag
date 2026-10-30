@@ -83,13 +83,13 @@ def detect_and_crop_tables(image_path: str, output_dir: str, model, detection_tr
     id2label[len(model.config.id2label)] = "no object"
 
     detected_tables = outputs_to_objects(outputs, image.size, id2label)
-    created: list[str] = []
+    created_files: list[str] = []
 
     for idx, table in enumerate(detected_tables):
         x1, y1, x2, y2 = [int(v) for v in table["bbox"]]
         cropped = image.crop((x1, y1, x2, y2))
-        target = os.path.join(output_dir, f"{filename}_table_{idx + 1}.png")
-        cropped.save(target)
-        created.append(target)
+        target_path = os.path.join(output_dir, f"{filename}_table_{idx + 1}.png")
+        cropped.save(target_path)
+        created_files.append(target_path)
 
-    return created
+    return created_files

@@ -1,38 +1,34 @@
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any, Dict, List
+import os
+
+from dotenv import load_dotenv
+from llama_index.core import SimpleDirectoryReader
+from llama_index.core.llms import ChatMessage, MessageRole
+from llama_index.multi_modal_llms.openai import OpenAIMultiModal
+
+load_dotenv()
 
 
-class FinanceRAG:
-    def __init__(self, vector_store=None, llm_client=None):
-        self.vector_store = vector_store
-        self.llm_client = llm_client
-
-    def answer_question(self, question: str) -> Dict[str, Any]:
-        return {
-            "question": question,
-            "answer": "Finance RAG pipeline is ready for implementation. Connect retrieval and validation layers to generate grounded results.",
-            "sources": [],
-            "metrics": [],
-            "calculation": "No numerical calculation performed yet.",
-        }
-
-    def build_query_plan(self, question: str) -> List[str]:
-        return [
-            "Identify the report type and relevant financial entity",
-            "Locate matching sections and tables",
-            "Extract required numeric values",
-            "Validate the answer against original document evidence",
-        ]
+def build_multimodal_llm():
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY is missing. Set it in the environment or .env file.")
+    return OpenAIMultiModal(model="gpt-4o", api_key=api_key, max_new_tokens=300)
 
 
-def extract_document_metadata(file_path: str) -> Dict[str, Any]:
-    path = Path(file_path)
-    return {
-        "filename": path.name,
-        "extension": path.suffix.lower(),
-        "size_bytes": path.stat().st_size if path.exists() else 0,
-        "document_type": "financial-report",
-        "status": "metadata_extracted",
-    }
+def query_table_images(table_dir: str, prompt: str):
+    if not os.path.exists(table_dir) or not os.listdir(table_dir):
+        raise FileNotFoundError("No table images were found in the target directory.")
+
+    llm = build_multimodal_llm()
+    image_documents = SimpleDirectoryReader(table_dir).load_data()
+
+    chat_message = ChatMessage(
+        role=MessageRole.USER,
+        content=prompt,
+        additional_kwargs={"image_documents": image_documents},
+    )
+
+    response = llm.chat([chat_message])
+    return response.message.content

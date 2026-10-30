@@ -1,9 +1,9 @@
 # data/README.md
 
-This directory is intended for raw financial documents, extracted table outputs, and generated vector-store artifacts.
+This directory is intended for raw financial documents, extracted page images, cropped table images, and generated indexing artifacts.
 
-Keep the following organized here:
-- raw PDFs and source reports
-- extracted tables and metadata
-- indexing output and embeddings
-- intermediate files generated during analysis
+Keep the following here:
+- raw PDFs and financial reports
+- page image exports from PDF conversion
+- detected table crops
+- any intermediate vector store or metadata outputs
