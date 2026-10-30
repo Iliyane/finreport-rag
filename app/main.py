@@ -22,22 +22,20 @@ def health_check():
 @app.post("/api/query")
 def handle_query(payload: dict):
     question = payload.get("question", "").strip()
-
     if not question:
         raise HTTPException(status_code=400, detail="A valid question is required.")
 
     response = {
-        "answer": "This is the starter response. Connect the retrieval and validation layers to answer real financial questions from your documents.",
+        "answer": "This is the starter response. Connect the retrieval and validation layers to answer financial questions from source documents.",
         "question": question,
         "sources": [
             {
                 "document": "example-report.pdf",
                 "page": 18,
                 "table": "Table 5",
-                "snippet": "Placeholder citation for finance-grounded responses."
+                "snippet": "Placeholder evidence for source-grounded financial analysis."
             }
         ],
         "confidence": "medium",
     }
-
-    return response
+    return JSONResponse(content=response)

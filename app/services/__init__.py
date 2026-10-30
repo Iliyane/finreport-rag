@@ -18,5 +18,4 @@ def list_pdf_files(folder: str) -> list[str]:
     target = Path(folder)
     if not target.exists():
         return []
-
     return sorted(str(path) for path in target.iterdir() if path.suffix.lower() == ".pdf")

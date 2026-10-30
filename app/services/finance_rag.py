@@ -12,26 +12,18 @@ class FinanceRAG:
     def answer_question(self, question: str) -> Dict[str, Any]:
         return {
             "question": question,
-            "answer": "The system is ready for implementation. Connect retrieval and validation layers to generate grounded answers.",
-            "sources": [
-                {
-                    "document": "pending",
-                    "page": None,
-                    "section": "pending",
-                    "table": None,
-                    "confidence": "pending",
-                }
-            ],
+            "answer": "Finance RAG pipeline is ready for implementation. Connect retrieval and validation layers to generate grounded results.",
+            "sources": [],
             "metrics": [],
-            "calculation": "No calculation performed yet.",
+            "calculation": "No numerical calculation performed yet.",
         }
 
     def build_query_plan(self, question: str) -> List[str]:
         return [
-            "Identify the relevant report type",
-            "Locate relevant sections and tables",
-            "Extract financial metrics",
-            "Validate the numeric answer against source documents",
+            "Identify the report type and relevant financial entity",
+            "Locate matching sections and tables",
+            "Extract required numeric values",
+            "Validate the answer against original document evidence",
         ]
 
 

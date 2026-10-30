@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     port: int = 8000
 
     openai_api_key: str = ""
-    openai_model: str = "gpt-4o-mini"
+    hf_token: str = ""
 
     vectorstore_provider: str = "faiss"
     vectorstore_path: str = "./data/vectorstore"
